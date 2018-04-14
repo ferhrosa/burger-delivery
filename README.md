@@ -7,6 +7,9 @@ Aplicativo web criado para um desafio e também para estudos.
 
 * Visual Studio 2017 (versão Community [aqui](https://www.visualstudio.com/vs/community/))
 * .NET Framework 4.6.2 (instala junto com o Visual Studio)
+* SQL Server 2012 ou mais recente
+  * Pode ser a edição Express
+  * Deve ter a opção de LocalDB instalada também
 
 ### Configurando a solução
 
