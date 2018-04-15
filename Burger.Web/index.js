@@ -39,6 +39,12 @@ function renderRecipes() {
             for (let i = 0; i < items.length; i++) {
                 let item = items[i];
 
+                let orderItem = {
+                    Name: item.Name,
+                    Price: item.Price,
+                    Ingredients: []
+                };
+
                 let recipe = $('<div>');
 
                 let header = $(`<header class="title-price">`);
@@ -53,13 +59,21 @@ function renderRecipes() {
                     let li = $('<li>');
                     li.html(ingredient.Name);
                     ul.append(li);
+
+                    orderItem.Ingredients.push({
+                        Ingredient: {
+                            Id: ingredient.Id,
+                            Name: ingredient.Name,
+                        },
+                        Ammount: 1,
+                    });
                 }
 
                 recipe.append(ul);
 
                 let footer = $('<footer>');
                 let button = $('<button type="button">ADICIONAR AO PEDIDO</button>');
-                button.click(() => addToCurrentOrder(item));
+                button.click(() => addToCurrentOrder(orderItem));
                 footer.append(button);
                 recipe.append(footer);
 
@@ -77,62 +91,72 @@ function buildCustomOrderItem() {
     for (let i = 0; i < allIngredients.length; i++) {
         let li = $('<li>');
         let label = $(`<label>`);
-        label.append($(`<input type="checkbox" value="${allIngredients[i].Id}" data-price="${allIngredients[i].Price}">`))
+        label.append($(`<input type="number" value="0" data-id="${allIngredients[i].Id}" data-price="${allIngredients[i].Price}">`))
         label.append($(`<span class='price'>${formatCurrency(allIngredients[i].Price)}</header>`));
         label.append(allIngredients[i].Name);
         li.append(label);
         customUl.append(li);
     }
 
-    let customTotalPrice = 0;
+    //let customTotalPrice = 0;
 
-    function updateCustomPrice() {
-        customPrice.html(formatCurrency(customTotalPrice));
+    //function updateCustomPrice() {
+    //    customPrice.html(formatCurrency(customTotalPrice));
 
-        if (customTotalPrice > 0) { customButton.removeAttr('disabled'); }
-        else { customButton.attr('disabled', 'disabled'); }
-    }
+    //    if (customTotalPrice > 0) { customButton.removeAttr('disabled'); }
+    //    else { customButton.attr('disabled', 'disabled'); }
+    //}
 
-    updateCustomPrice();
+    //updateCustomPrice();
 
     customButton.click(() => {
         let ingredients = [];
 
-        customUl.find('input').each((index, element) => {
-            let e = $(element);
-            let id = +e.val();
+        customUl.find('input[type=number]').each((index, element) => {
+            let input = $(element);
+            let ammount = +input.val();
+            let id = +input.data('id');
             let name;
 
-            for (var i in allIngredients) {
-                if (allIngredients[i].Id == id) { name = allIngredients[i].Name; }
+            //for (var i in allIngredients) {
+            //    if (allIngredients[i].Id == id) { name = allIngredients[i].Name; }
+            //}
+
+            if (ammount) {
+                ingredients.push({ Ingredient: { Id: id }, Ammount: ammount });
             }
 
-            if (e.is(':checked')) {
-                ingredients.push({ Id: id, Name: name });
-            }
+            input.val(0);
         });
 
-        customUl.find('input').prop('checked', false);
+        //customUl.find('input').prop('checked', false);
 
-        addToCurrentOrder({
-            Name: 'Personalizado',
-            Ingredients: ingredients,
-            Price: customTotalPrice,
-        });
+        let item = { Ingredients: ingredients };
 
-        customTotalPrice = 0;
-        updateCustomPrice();
+        api.orders.calculateCustom(item)
+            .done(calculatedItem => {
+                if (confirm(`Confirma a inclusão de um item personalizado pelo preco de ${formatCurrency(calculatedItem.Price)}?`)) {
+                    addToCurrentOrder(calculatedItem);
+
+                    // Clear the inputed ammount only after confirming the inclusion of the item.
+                    customUl.find('input[type=number]').val(0);
+                }
+            });
+
+        //customTotalPrice = 0;
+        //updateCustomPrice();
     });
 
-    custom.find('input[type="checkbox"]').change(event => {
-        let price = +$(event.target).data('price');
+    //custom.find('input[type="number"]').change(event => {
+    //    let price = +$(event.target).data('price');
+    //    price *= +$(event.target).val();
 
-        if (!event.target.checked) { price *= -1; }
+    //    //if (!event.target.checked) { price *= -1; }
 
-        customTotalPrice += price;
+    //    customTotalPrice += price;
 
-        updateCustomPrice();
-    });
+    //    //updateCustomPrice();
+    //});
 
     return custom;
 }
@@ -154,7 +178,7 @@ function addToCurrentOrder(item) {
     li.append(header);
 
     for (var i in item.Ingredients) {
-        li.append($(`<span>${item.Ingredients[i].Name}</span>`));
+        li.append($(`<span>${item.Ingredients[i].Ammount}x ${item.Ingredients[i].Ingredient.Name}</span>`));
     }
 
     currentOrderUl.append(li);

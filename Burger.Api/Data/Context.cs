@@ -20,5 +20,9 @@ namespace Burger.Api.Data
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItemIngredient> OrderItemIngredients { get; set; }
+
     }
 }

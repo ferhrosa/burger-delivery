@@ -19,29 +19,29 @@ namespace Burger.Api.Controllers
         }
 
 
-        // GET api/ingredients
+        // GET ingredients
         public IEnumerable<Ingredient> Get()
         {
             return context.Ingredients;
         }
 
-        // GET api/ingredients/5
+        // GET ingredients/5
         public Ingredient Get(short id)
         {
             return context.Ingredients.Find(id);
         }
 
-        //// POST api/ingredients
+        //// POST ingredients
         //public void Post([FromBody]string value)
         //{
         //}
 
-        //// PUT api/ingredients/5
+        //// PUT ingredients/5
         //public void Put(int id, [FromBody]string value)
         //{
         //}
 
-        //// DELETE api/ingredients/5
+        //// DELETE ingredients/5
         //public void Delete(int id)
         //{
         //}

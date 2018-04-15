@@ -91,22 +91,16 @@ header.title-price {
             box-shadow: 1px 1px 6px #631;
         }
 
-        /*.menu > div > header {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-        }*/
+        .menu > div > header > h3 {
+            flex-grow: 1;
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
 
-            .menu > div > header > h3 {
-                flex-grow: 1;
-                margin: 0;
-                font-weight: bold;
-                font-size: 1.2em;
-            }
-
-            .menu > div > header > .price {
-                text-align: right;
-            }
+        .menu > div > header > .price {
+            text-align: right;
+        }
 
         .menu > div > ul {
             flex-grow: 1;
@@ -166,6 +160,12 @@ header.title-price {
                     display: block;
                     cursor: pointer;
                 }
+
+                    .menu > div.custom > ul > li > label > input[type=number] {
+                        width: 30px;
+                        margin-right: 5px;
+                        text-align: right;
+                    }
 
                     .menu > div.custom > ul > li > label > .price {
                         float: right;
@@ -235,8 +235,6 @@ header.title-price {
                 }
 
                 .orders > .current > ul > li > header {
-                    /*display: flex;
-                    flex-direction: row;*/
                     font-size: 0.7em;
                 }
 
