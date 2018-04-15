@@ -33,7 +33,7 @@ namespace Burger.Api.Controllers
         [HttpPost]
         public OrderItem Post([FromBody]OrderItem item)
         {
-            return orderService.CalculateCustom(item);
+            return orderService.CalculateItem(item);
         }
 
         // POST orders

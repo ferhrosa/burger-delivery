@@ -112,8 +112,6 @@ function buildCustomOrderItem() {
             if (ammount) {
                 ingredients.push({ Ingredient: { Id: id }, Ammount: ammount });
             }
-
-            input.val(0);
         });
 
         let item = { Ingredients: ingredients };
@@ -175,7 +173,7 @@ function updateLatestOrders() {
 
                 let header = $('<header class="title-price">');
                 header.append($(`<h2>${order.Id} - ${order.FormattedEntryDate}</h2>`));
-                header.append($(`<span class="price">${formatCurrency(order.Id)}</span>`));
+                header.append($(`<span class="price">${formatCurrency(order.Price)}</span>`));
                 div.append(header);
 
                 let ul = $('<ul class="order-item">');
@@ -196,6 +194,10 @@ function buildOrderItem(item) {
     header.append($(`<h3>${item.Name}</h3>`));
     header.append($(`<span class="price">${formatCurrency(item.Price)}</h3>`));
     li.append(header);
+
+    if (item.Sale) {
+        li.append($(`<span>Promoção: ${item.SaleName}</span>`));
+    }
 
     for (var i in item.Ingredients) {
         li.append($(`<span>${item.Ingredients[i].Ammount}x ${item.Ingredients[i].Ingredient.Name}</span>`));

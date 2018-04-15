@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Web;
 
 namespace Burger.Api.Models
 {
@@ -28,7 +26,26 @@ namespace Burger.Api.Models
         [Required]
         public decimal Price { get; set; }
 
+        public Sales? Sale { get; set; }
+
+        public string SaleName { get { return Sale?.GetName(); } }
+
         public List<OrderItemIngredient> Ingredients { get; set; }
 
+
+        public bool HasIngredient(Ingredients ingredient)
+        {
+            return Ingredients != null
+                && Ingredients.Any(i => i.Ingredient.Id == (short)ingredient);
+        }
+
+        public int CountIngredient(Ingredients ingredient)
+        {
+            if (Ingredients == null) { return 0; }
+
+            return Ingredients
+                .Where(i => i.Ingredient.Id == (short)ingredient)
+                .Sum(i => i.Ammount);
+        }
     }
 }

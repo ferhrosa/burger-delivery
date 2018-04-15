@@ -249,7 +249,7 @@ header.title-price {
             .orders ul.order-item > li > span {
                 display: inline-block;
                 padding: 1px 2px;
-                margin-right: 2px;
+                margin-right: 5px;
                 background-color: #fff0dd;
                 color: #654;
                 font-size: 0.7em;

@@ -9,6 +9,8 @@ namespace Burger.Api.Services
 {
     public class OrderService
     {
+        const int IngredientSaleAmmount = 3;
+
         private readonly Context context;
 
         public OrderService(Context context)
@@ -24,7 +26,7 @@ namespace Burger.Api.Services
                 .OrderByDescending(o => o.EntryDate);
         }
 
-        public OrderItem CalculateCustom(OrderItem item)
+        public OrderItem CalculateItem(OrderItem item)
         {
             item.Name = item.Name ?? "Personalizado";
 
@@ -34,7 +36,7 @@ namespace Burger.Api.Services
                 ingredient.Price = ingredient.Ingredient.Price;
             }
 
-            item.Price = item.Ingredients.Sum(i => i.Price * i.Ammount);
+            CalculateItemPrice(item);
 
             return item;
         }
@@ -48,7 +50,10 @@ namespace Burger.Api.Services
                 foreach (var ingredient in item.Ingredients)
                 {
                     ingredient.OrderItem = item;
-                    ingredient.Ingredient = context.Ingredients.Find(ingredient.Ingredient.Id);
+
+                    // Recalculate the item's price to prevent letting the user
+                    // manipulate the data to be saved.
+                    CalculateItem(item);
                 }
             }
 
@@ -57,6 +62,38 @@ namespace Burger.Api.Services
             context.SaveChanges();
 
             return order;
+        }
+
+        private void CalculateItemPrice(OrderItem item)
+        {
+            item.Price = item.Ingredients.Sum(i => i.Price * i.Ammount);
+
+            Func<Ingredients, decimal> calculateSaleIngredient = ingredient =>
+            {
+                var price = item.Ingredients
+                    .Where(i => i.Ingredient.Id != (short)ingredient)
+                    .Sum(i => i.Price * i.Ammount);
+
+                return price + item.Ingredients
+                    .Where(i => i.Ingredient.Id == (short)ingredient)
+                    .Sum(i => i.Price * (i.Ammount - i.Ammount / IngredientSaleAmmount));
+            };
+
+            if (item.HasIngredient(Ingredients.Alface) && !item.HasIngredient(Ingredients.Bacon))
+            {
+                item.Price *= 0.9m;
+                item.Sale = Sales.Light;
+            }
+            else if (item.CountIngredient(Ingredients.Hamburguer) >= IngredientSaleAmmount)
+            {
+                item.Price = calculateSaleIngredient(Ingredients.Hamburguer);
+                item.Sale = Sales.MuitaCarne;
+            }
+            else if (item.CountIngredient(Ingredients.Queijo) >= IngredientSaleAmmount)
+            {
+                item.Price = calculateSaleIngredient(Ingredients.Queijo);
+                item.Sale = Sales.MuitoQueijo;
+            }
         }
     }
 }
