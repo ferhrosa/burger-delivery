@@ -6,6 +6,7 @@ body {
     display: flex;
     flex-direction: column;
     margin: 0;
+    padding-left: 10px;
     padding-right: 250px;
     background-color: #fffaee;
     color: #631;
@@ -185,6 +186,10 @@ header.title-price {
     flex-direction: column;
 }
 
+    .orders > * {
+        flex-grow: 1;
+    }
+
     .orders h2 {
         margin: 5px 0;
         font-size: 1.2em;
@@ -212,6 +217,45 @@ header.title-price {
         }
 
 
+    .orders ul.order-item {
+        margin: 0;
+        padding: 0;
+    }
+
+        .orders ul.order-item > li {
+            list-style: none;
+            padding: 5px 0;
+            border-bottom: dotted 1px #ccbb99;
+        }
+
+            .orders ul.order-item > li:last-child {
+                border-bottom: none;
+            }
+
+            .orders ul.order-item > li > header {
+                font-size: 0.7em;
+            }
+
+                .orders ul.order-item > li > header > h3 {
+                    flex-grow: 1;
+                    margin: 0;
+                    line-height: 1.2;
+                }
+
+                .orders ul.order-item > li > header > .price {
+                    text-align: right;
+                }
+
+            .orders ul.order-item > li > span {
+                display: inline-block;
+                padding: 1px 2px;
+                margin-right: 2px;
+                background-color: #fff0dd;
+                color: #654;
+                font-size: 0.7em;
+                border-radius: 2px;
+            }
+
     .orders > .current {
         max-height: 70%;
         padding: 5px;
@@ -219,46 +263,29 @@ header.title-price {
         overflow-y: auto;
     }
 
-        .orders > .current > ul {
-            margin: 0;
-            padding: 0;
-        }
-
-            .orders > .current > ul > li {
-                list-style: none;
-                padding: 5px 0;
-                border-bottom: dotted 1px #ccbb99;
-            }
-
-                .orders > .current > ul > li:last-child {
-                    border-bottom: none;
-                }
-
-                .orders > .current > ul > li > header {
-                    font-size: 0.7em;
-                }
-
-                    .orders > .current > ul > li > header > h3 {
-                        flex-grow: 1;
-                        margin: 0;
-                        line-height: 1.2;
-                    }
-
-                    .orders > .current > ul > li > header > .price {
-                        text-align: right;
-                    }
-
-                .orders > .current > ul > li > span {
-                    display: inline-block;
-                    padding: 1px 2px;
-                    margin-right: 2px;
-                    background-color: #fff0dd;
-                    color: #654;
-                    font-size: 0.7em;
-                    border-radius: 2px;
-                }
-
     .orders > .all {
         flex-grow: 1;
         overflow-y: auto;
+        max-height: 80%;
     }
+
+        .orders > .all > h2 {
+            margin-left: 5px;
+        }
+
+        .orders > .all > .list > div {
+            padding: 5px;
+            border-top: solid 1px #ccbb99;
+        }
+
+            .orders > .all > .list > div:nth-child(odd) {
+                background-color: #fffaf0;
+            }
+
+            .orders > .all > .list > div > header {
+                font-size: 0.8em;
+            }
+
+                .orders > .all > .list > div > header > h2 {
+                    margin: 0;
+                }

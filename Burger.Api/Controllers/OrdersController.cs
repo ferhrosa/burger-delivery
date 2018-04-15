@@ -20,6 +20,14 @@ namespace Burger.Api.Controllers
         }
 
 
+        // GET latest
+        [Route("latest")]
+        [HttpGet]
+        public IEnumerable<Order> GetLatest()
+        {
+            return orderService.GetLatest();
+        }
+
         // POST orders/calculate-custom
         [Route("calculate-custom")]
         [HttpPost]
@@ -27,6 +35,16 @@ namespace Burger.Api.Controllers
         {
             return orderService.CalculateCustom(item);
         }
+
+        // POST orders
+        [Route("")]
+        [HttpPost]
+        public Order Save([FromBody]Order order)
+        {
+            return orderService.Save(order);
+        }
+
+
 
         //// GET orders
         //public IEnumerable<string> Get()

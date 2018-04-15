@@ -3,6 +3,7 @@ var currentOrder;
 var currentOrderUl;
 var currentOrderSave;
 var currentOrderTotalPrice;
+var allOrdersListElement;
 
 
 $(() => {
@@ -11,11 +12,12 @@ $(() => {
     currentOrderUl = currentOrder.find('ul');
     currentOrderSave = currentOrder.find('button.main');
     currentOrderTotalPrice = currentOrder.find('header > .price');
+    allOrdersListElement = $('#all-orders > .list');
 
     currentOrderSave.click(saveOrder);
 
     listAllIngredients(renderRecipes);
-
+    updateLatestOrders();
 });
 
 
@@ -98,17 +100,6 @@ function buildCustomOrderItem() {
         customUl.append(li);
     }
 
-    //let customTotalPrice = 0;
-
-    //function updateCustomPrice() {
-    //    customPrice.html(formatCurrency(customTotalPrice));
-
-    //    if (customTotalPrice > 0) { customButton.removeAttr('disabled'); }
-    //    else { customButton.attr('disabled', 'disabled'); }
-    //}
-
-    //updateCustomPrice();
-
     customButton.click(() => {
         let ingredients = [];
 
@@ -118,18 +109,12 @@ function buildCustomOrderItem() {
             let id = +input.data('id');
             let name;
 
-            //for (var i in allIngredients) {
-            //    if (allIngredients[i].Id == id) { name = allIngredients[i].Name; }
-            //}
-
             if (ammount) {
                 ingredients.push({ Ingredient: { Id: id }, Ammount: ammount });
             }
 
             input.val(0);
         });
-
-        //customUl.find('input').prop('checked', false);
 
         let item = { Ingredients: ingredients };
 
@@ -142,21 +127,7 @@ function buildCustomOrderItem() {
                     customUl.find('input[type=number]').val(0);
                 }
             });
-
-        //customTotalPrice = 0;
-        //updateCustomPrice();
     });
-
-    //custom.find('input[type="number"]').change(event => {
-    //    let price = +$(event.target).data('price');
-    //    price *= +$(event.target).val();
-
-    //    //if (!event.target.checked) { price *= -1; }
-
-    //    customTotalPrice += price;
-
-    //    //updateCustomPrice();
-    //});
 
     return custom;
 }
@@ -171,6 +142,55 @@ function addToCurrentOrder(item) {
 
     currentOrderTotalPrice.html(formatCurrency(currentOrderPrice));
 
+    currentOrderUl.append(buildOrderItem(item));
+
+    currentOrderSave.removeAttr('disabled');
+}
+
+
+function saveOrder() {
+    api.orders.save({ items: currentOrderList })
+        .done(() => {
+            currentOrderList.splice(0, currentOrderList.length);
+            currentOrderPrice = 0;
+            currentOrderTotalPrice.html('');
+            currentOrderUl.children().remove();;
+
+            updateLatestOrders();
+        });
+}
+
+
+function updateLatestOrders() {
+    api.orders.listLtest()
+        .done(orders => {
+            console.dir(orders);
+
+            allOrdersListElement.children().remove();
+
+            for (let i in orders) {
+                let order = orders[i];
+
+                let div = $('<div>');
+
+                let header = $('<header class="title-price">');
+                header.append($(`<h2>${order.Id} - ${order.FormattedEntryDate}</h2>`));
+                header.append($(`<span class="price">${formatCurrency(order.Id)}</span>`));
+                div.append(header);
+
+                let ul = $('<ul class="order-item">');
+                for (let j in order.Items) {
+                    ul.append(buildOrderItem(order.Items[j]));
+                }
+                div.append(ul);
+
+                allOrdersListElement.append(div);
+            }
+        });
+}
+
+
+function buildOrderItem(item) {
     let li = $('<li>');
     let header = $('<header class="title-price">');
     header.append($(`<h3>${item.Name}</h3>`));
@@ -181,12 +201,5 @@ function addToCurrentOrder(item) {
         li.append($(`<span>${item.Ingredients[i].Ammount}x ${item.Ingredients[i].Ingredient.Name}</span>`));
     }
 
-    currentOrderUl.append(li);
-
-    currentOrderSave.removeAttr('disabled');
-}
-
-function saveOrder() {
-    api.orders.save(currentOrderList)
-        .done(() => alert('saved'));
+    return li;
 }

@@ -11,8 +11,9 @@ var api = {
     },
 
     orders: {
+        listLtest: () => $.get(`${urlApi}orders/latest`),
         calculateCustom: item => $.post(`${urlApi}orders/calculate-custom`, item),
-        save: items => $.post(`${urlApi}orders`, items),
+        save: order => $.post(`${urlApi}orders`, order),
     },
 
 }

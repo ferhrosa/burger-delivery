@@ -13,7 +13,6 @@ namespace Burger.Api.Data
         public Context() : base("Burger")
         {
             Database.SetInitializer(new ContextInitializer());
-            //Configuration.LazyLoadingEnabled = false;
             Configuration.ProxyCreationEnabled = false;
         }
 

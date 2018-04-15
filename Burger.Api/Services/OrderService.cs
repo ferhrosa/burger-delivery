@@ -17,9 +17,16 @@ namespace Burger.Api.Services
         }
         
 
+        public IEnumerable<Order> GetLatest()
+        {
+            return context.Orders
+                .Include("Items.Ingredients.Ingredient")
+                .OrderByDescending(o => o.EntryDate);
+        }
+
         public OrderItem CalculateCustom(OrderItem item)
         {
-            item.Name = "Personalizado";
+            item.Name = item.Name ?? "Personalizado";
 
             foreach (var ingredient in item.Ingredients)
             {
@@ -30,6 +37,26 @@ namespace Burger.Api.Services
             item.Price = item.Ingredients.Sum(i => i.Price * i.Ammount);
 
             return item;
+        }
+
+        public Order Save(Order order)
+        {
+            foreach (var item in order.Items)
+            {
+                item.Order = order;
+
+                foreach (var ingredient in item.Ingredients)
+                {
+                    ingredient.OrderItem = item;
+                    ingredient.Ingredient = context.Ingredients.Find(ingredient.Ingredient.Id);
+                }
+            }
+
+            context.Orders.Add(order);
+
+            context.SaveChanges();
+
+            return order;
         }
     }
 }

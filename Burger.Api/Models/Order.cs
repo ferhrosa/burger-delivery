@@ -16,6 +16,8 @@ namespace Burger.Api.Models
 
         public DateTime EntryDate { get; set; }
 
+        public string FormattedEntryDate { get { return EntryDate.ToString("dd/MM/yyyy HH:mm:ss"); } }
+
         public List<OrderItem> Items { get; set; }
 
         public decimal? Price { get { return Items?.Sum(i => i.Price); } }
