@@ -11,7 +11,7 @@ var api = {
     },
 
     orders: {
-        save: item => $.post(`${urlApi}orders`, JSON.stringify(item)),
+        save: items => $.post(`${urlApi}orders`, JSON.stringify(items)),
     },
 
 }

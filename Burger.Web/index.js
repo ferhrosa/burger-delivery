@@ -1,7 +1,18 @@
 ﻿var menu;
+var currentOrder;
+var currentOrderUl;
+var currentOrderSave;
+var currentOrderTotalPrice;
+
 
 $(() => {
     menu = $('#menu');
+    currentOrder = $('#current-order');
+    currentOrderUl = currentOrder.find('ul');
+    currentOrderSave = currentOrder.find('button.main');
+    currentOrderTotalPrice = currentOrder.find('header > .price');
+
+    currentOrderSave.click(saveOrder);
 
     listAllIngredients(renderRecipes);
 
@@ -30,7 +41,7 @@ function renderRecipes() {
 
                 let recipe = $('<div>');
 
-                let header = $(`<header>`);
+                let header = $(`<header class="title-price">`);
                 header.append($(`<h3>${item.Name}</h3>`))
                 header.append($(`<span class='price'>${formatCurrency(item.Price)}</header>`));
                 recipe.append(header);
@@ -48,7 +59,7 @@ function renderRecipes() {
 
                 let footer = $('<footer>');
                 let button = $('<button type="button">ADICIONAR AO PEDIDO</button>');
-                button.click(() => addToOrder(item));
+                button.click(() => addToCurrentOrder(item));
                 footer.append(button);
                 recipe.append(footer);
 
@@ -89,16 +100,24 @@ function buildCustomOrderItem() {
 
         customUl.find('input').each((index, element) => {
             let e = $(element);
+            let id = +e.val();
+            let name;
+
+            for (var i in allIngredients) {
+                if (allIngredients[i].Id == id) { name = allIngredients[i].Name; }
+            }
+
             if (e.is(':checked')) {
-                ingredients.push({ Id: +e.val() });
+                ingredients.push({ Id: id, Name: name });
             }
         });
 
         customUl.find('input').prop('checked', false);
 
-        addToOrder({
+        addToCurrentOrder({
             Name: 'Personalizado',
             Ingredients: ingredients,
+            Price: customTotalPrice,
         });
 
         customTotalPrice = 0;
@@ -118,6 +137,32 @@ function buildCustomOrderItem() {
     return custom;
 }
 
-function addToOrder(item) {
-    console.dir(item);
+
+var currentOrderList = [];
+var currentOrderPrice = 0;
+
+function addToCurrentOrder(item) {
+    currentOrderList.push(item);
+    currentOrderPrice += item.Price;
+
+    currentOrderTotalPrice.html(formatCurrency(currentOrderPrice));
+
+    let li = $('<li>');
+    let header = $('<header class="title-price">');
+    header.append($(`<h3>${item.Name}</h3>`));
+    header.append($(`<span class="price">${formatCurrency(item.Price)}</h3>`));
+    li.append(header);
+
+    for (var i in item.Ingredients) {
+        li.append($(`<span>${item.Ingredients[i].Name}</span>`));
+    }
+
+    currentOrderUl.append(li);
+
+    currentOrderSave.removeAttr('disabled');
+}
+
+function saveOrder() {
+    api.orders.save(currentOrderList)
+        .done(() => alert('saved'));
 }

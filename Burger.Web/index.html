@@ -11,13 +11,20 @@
 
 <body>
 
-    <h1>Burger Delivery</h1>
+    <h1>
+        <span class="logo">
+            <div class="top"></div>
+            <div class="middle"></div>
+            <div class="bottom"></div>
+        </span>
+        Burger Delivery
+    </h1>
 
     <div id="menu" class="menu"></div>
 
     <script id="template-custom" type="text/template">
         <div class="custom">
-            <header>
+            <header class="title-price">
                 <h3>Personalizado</h3>
                 <span class="price"></span>
             </header>
@@ -29,6 +36,23 @@
             </footer>
         </div>
     </script>
+
+
+    <div class="orders">
+        
+        <div id="current-order" class="current">
+            <header class="title-price">
+                <h2>Pedido atual</h2>
+                <span class="price"></span>
+            </header>
+            <ul></ul>
+            <button type="button" class="main" disabled>SALVAR PEDIDO</button>
+        </div>
+
+        <div id="all-orders" class="all"></div>
+
+    </div>
+
 
     <script src="jquery-3.3.1.js"></script>
 
