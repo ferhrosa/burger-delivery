@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using Burger.Api.Data;
 using Burger.Api.Models;
 
@@ -83,6 +82,8 @@ namespace Burger.Api.Services
                     .Sum(i => i.Price * (i.Ammount - i.Ammount / IngredientSaleAmmount));
             };
 
+            // The sales are calculated according to their priority.
+            // If one sale applies to one item, no other sales can be applied.
             if (item.HasIngredient(Ingredients.Alface) && !item.HasIngredient(Ingredients.Bacon))
             {
                 item.Price *= 0.9m;

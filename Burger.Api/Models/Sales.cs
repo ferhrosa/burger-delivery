@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Burger.Api.Models
+﻿namespace Burger.Api.Models
 {
     public enum Sales : short
     {
