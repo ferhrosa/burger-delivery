@@ -9,11 +9,11 @@ namespace Burger.Api.Services
 {
     public class OrderService
     {
-        const int IngredientSaleAmmount = 3;
+        public const int IngredientSaleAmmount = 3;
 
         private readonly Context context;
 
-        public OrderService(Context context)
+        public OrderService(Context context = null)
         {
             this.context = context;
         }
@@ -32,7 +32,11 @@ namespace Burger.Api.Services
 
             foreach (var ingredient in item.Ingredients)
             {
-                ingredient.Ingredient = context.Ingredients.Find(ingredient.Ingredient.Id);
+                if (context != null)
+                {
+                    ingredient.Ingredient = context.Ingredients.Find(ingredient.Ingredient.Id);
+                }
+
                 ingredient.Price = ingredient.Ingredient.Price;
             }
 
