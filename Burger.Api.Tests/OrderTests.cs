@@ -48,15 +48,15 @@ namespace Burger.Api.Tests
                 Ingredients = new List<OrderItemIngredient>
                 {
                     new OrderItemIngredient { Ingredient = hamburguer, Ammount = 2 },
-                    new OrderItemIngredient { Ingredient = alface, Ammount = 1 },
+                    new OrderItemIngredient { Ingredient = ovo, Ammount = 1 },
                 }
             };
 
             orderService.CalculateItem(item2);
             order.Items.Add(item2);
 
-            Assert.AreEqual(item2.Price, 6.4m);
-            Assert.AreEqual(order.Price, 9.4m);
+            Assert.AreEqual(item2.Price, 6.8m);
+            Assert.AreEqual(order.Price, 9.8m);
         }
 
         [TestMethod]
